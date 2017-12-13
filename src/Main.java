@@ -72,6 +72,8 @@ public class Main extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         m_train_text = new javax.swing.JMenuItem();
         m_train_import = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+        m_help = new javax.swing.JMenuItem();
 
         jMenu1.setText("File");
 
@@ -156,6 +158,18 @@ public class Main extends javax.swing.JFrame {
         jMenu3.add(m_train_text);
 
         jMenuBar1.add(jMenu3);
+
+        jMenu4.setText("Help");
+
+        m_help.setText("User manual");
+        m_help.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_helpActionPerformed(evt);
+            }
+        });
+        jMenu4.add(m_help);
+
+        jMenuBar1.add(jMenu4);
         return jMenuBar1;
     }
 
@@ -347,6 +361,17 @@ public class Main extends javax.swing.JFrame {
         });
     }
 
+    // Menu action
+    private void m_helpActionPerformed(java.awt.event.ActionEvent evt) {
+        UserManual sp = new UserManual();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        sp.pack();
+        int height = sp.getHeight();
+        int width = sp.getWidth();
+        sp.setLocation(screenSize.width/2-width/2, screenSize.height/2-height/2);
+        sp.setVisible(true);
+    }
+
 
     // Mouse click event callback
     private void drawing1MouseClicked(java.awt.event.MouseEvent evt) {
@@ -386,6 +411,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
@@ -395,6 +421,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem m_mapper;
     private javax.swing.JMenuItem m_train_text;
     private javax.swing.JMenuItem m_train_import;
+    private javax.swing.JMenuItem m_help;
     private Drawing drawing1;
     private JList list1;
 
