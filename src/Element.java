@@ -21,6 +21,7 @@ public abstract class Element {
     }
 
     protected void generateUID() {
+        this.bias = Math.random();
         this.UID = UUID.randomUUID();
     }
 
@@ -71,4 +72,8 @@ public abstract class Element {
     public void set(double b) {};
 
     public void addOutput(Element e) {}
+
+    public void setUID(String str) {
+        this.UID = UUID.fromString(str);
+    }
 }

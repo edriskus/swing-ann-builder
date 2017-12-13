@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -7,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -64,6 +67,8 @@ public class Main extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         m_input = new javax.swing.JMenuItem();
         m_output = new javax.swing.JMenuItem();
@@ -85,6 +90,22 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem1);
+
+        jMenuItem3.setText("Save as");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
+        jMenuItem4.setText("Open");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem2.setText("Quit");
@@ -200,6 +221,43 @@ public class Main extends javax.swing.JFrame {
     // "Quit" menu action callback
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
         System.exit(0);
+    }
+
+    // Menu action
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
+        final Main selff = this;
+        File file = new File("neural_network.json");
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            if (fileChooser.showSaveDialog(selff) == JFileChooser.APPROVE_OPTION) {
+                file = fileChooser.getSelectedFile();
+                // save to file
+            }
+            JSONObject res = ann.serialize();
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(res.toString());
+            fileWriter.flush();
+        } catch(Exception ex) {
+            System.err.println("Klaida skaitant faila");
+        }
+    }
+
+    // Menu action
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {
+        final Main selff = this;
+        File file;
+        try {
+            final JFileChooser fc = new JFileChooser();
+            int returnVal = fc.showOpenDialog(selff);
+            file = fc.getSelectedFile();
+            String content = new Scanner(file).useDelimiter("\\Z").next();
+            System.out.println(content);
+            JSONObject obj = new JSONObject(content);
+            this.ann.deserialize(obj);
+            this.drawing1.repaint();
+        } catch(Exception ex) {
+            System.err.println("Klaida skaitant faila");
+        }
     }
 
     // "New network" menu action callback
@@ -385,7 +443,7 @@ public class Main extends javax.swing.JFrame {
                 //plius galit tikrinti gal tai not kuris jau turti 1 input ir t.t.
                 if(e instanceof AnnFeature) {
                     // Su kiekvienu paspaudimu pakeicia INPUT reiksme
-                    e.set(e.output() > 0 ? 0 : 1);
+                    openValueModal(e);
                     drawing1.repaint();
                     break;
                 } else if(e instanceof AnnMapper) {
@@ -397,6 +455,18 @@ public class Main extends javax.swing.JFrame {
             current = null;
         }
     }
+
+    // Menu action
+    private void openValueModal(Element e) {
+        FeatureSettings sp = new FeatureSettings(e);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        sp.pack();
+        int height = sp.getHeight();
+        int width = sp.getWidth();
+        sp.setLocation(screenSize.width/2-width/2, screenSize.height/2-height/2);
+        sp.setVisible(true);
+    }
+
 
     public void populateTrainList() {
         this.list1.setListData(this.ann.currentTrainData.toArray());
@@ -415,6 +485,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem m_neuron;
     private javax.swing.JMenuItem m_input;
     private javax.swing.JMenuItem m_output;
